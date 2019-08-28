@@ -6,7 +6,7 @@ except ImportError:
 import time
 import json
 import runpy
-from Scripts import test
+#from Scripts import test
 from Scripts import colors
 from Scripts import distance
 
@@ -30,13 +30,13 @@ def on_message(ws, message):
         win = module['win_condition']
         data_result = {}
         if module['type'] == "distance":
-            print("distance")
-            #data_result["status"] = test.start(win)
+            #print("distance")
+            data_result["status"] = test.start(win)
         elif module['type'] == "colors":
-            print("colors")
-            #data_result["status"] = colors.start(win)
-        elif module['type'] == "test":
-            data_result["status"] = test.start()
+            #print("colors")
+            data_result["status"] = colors.start(win)
+        #elif module['type'] == "test":
+            #data_result["status"] = test.start()
             #print(data_result)
         data_result['position'] = module['position']
         data_type = "end_module"
