@@ -10,9 +10,10 @@ from Scripts import test
 from Scripts import colors
 from Scripts import distance
 
+server_adress = "ws://192.168.33.109/ws/test"
+
 
 def on_message(ws, message):
-
     message = json.loads(message)
     beginTime = time.time()
     #print(message['type'])
@@ -59,19 +60,6 @@ def on_close(ws):
 
 def on_open(ws):
     def run(*args):
-        for i in range(1):
-            message = {
-                "type": "init_module",
-                "target": "board",
-                "message": {
-                    "position": 0,
-                    "time_max": 10,
-                    "win_condition": ["cyan", "5cm", "10cm"],
-                    "type": "colors"
-                }
-            }
-            time.sleep(1)
-            ws.send(json.dumps(message))
         time.sleep(1)
         #ws.close()
     thread.start_new_thread(run, ())
@@ -79,7 +67,7 @@ def on_open(ws):
 
 if __name__ == "__main__":
     websocket.enableTrace(True)
-    ws = websocket.WebSocketApp("ws://192.168.33.109/ws/test",
+    ws = websocket.WebSocketApp(server_adress,
                               on_message = on_message,
                               on_error = on_error,
                               on_close = on_close)
