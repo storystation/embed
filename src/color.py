@@ -1,56 +1,52 @@
-# Imports
-import time
+# SCRIPT POUR RADAR DE DISTANCE
+
 import RPi.GPIO as GPIO
-
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
-
-# Define buttons
-GPIO.setup(11,GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Blue button
-GPIO.setup(13,GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Red button
-GPIO.setup(15,GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Green button
-
-# Define LED
-GPIO.setup(36,GPIO.OUT) # Blue LED
-GPIO.setup(38,GPIO.OUT) # Red LED
-GPIO.setup(40,GPIO.OUT) # Green LED
-
-right_anwser = ??? #TODO To get from API
-
-answers = {
-    # [blue, red, green]
-    "red": [0,1,0],
-    "blue": [1,0,0],
-    "green": [0,0,1],
-    "mangeta": [1,1,0],
-    "yellow": [0,1,1],
-    "cyan": [1,0,1],
-    "white": [1,1,1]
-}
+import time
 
 
-def checkAnswer(arrayToCheck):
-    if answers[rightAnswer] == arrayToCheck:
-        return True #TODO Send True to API
-    else:
-        return False #TODO Send False to API
+def start(win):
+    GPIO.setmode(GPIO.BOARD)
 
-# Infinite loop
-while True:
-    # Get buttons state
-    state_blue = GPIO.input(11)
-    state_red = GPIO.input(13)
-    state_green = GPIO.input(15)
-    
-    
-    # Check buttons state
-    if state_blue == 1 or state_red == 1 or state_green == 1:
+    GPIO.setup(16,GPIO.OUT) # TRIG
+    GPIO.setup(22,GPIO.IN) # ECHO
+
+    GPIO.output(16,False)
+
+    #repet = input("Entrez un nombre de repetitions de mesure : ")
+
+    beginning = time.time()
+    for x in range(50):
+        time.sleep(1)
+        
+        GPIO.output(16,True)
+        time.sleep(0.0001)
+        GPIO.output(16,False)
+        
+        while GPIO.input(22)==0:
+            debutImpulsion = time.time()
+        
+        while GPIO.input(22)==1:
+            finImpulsion = time.time()
+        
+        distance = round((finImpulsion - debutImpulsion) * 340 * 100 / 2, 1)
+
+        #if type(win) == str:
+        #    win = int(win)
+        
+        minDist = 5
+        maxDist = 10
+        
+        if distance > minDist and distance < maxDist:
+            print("Tu es as", distance, "cm depuis", int(time.time() - beginning), "secondes!")
+            if time.time() > beginning + 5.0:
+                return "OK"
+                #print("Bonne distance!")
+                exit()
+
+        else: 
+            print("Tu es as ", distance, "cm")
+            beginning = time.time()
+
         time.sleep(0.1)
-        if state_blue: GPIO.output(36,GPIO.HIGH)
-        if state_blue: GPIO.output(38,GPIO.HIGH) 
-        if state_blue: GPIO.output(40,GPIO.HIGH) 
 
-        checkAnswer([state_blue, state_red, state_green])
-
-    time.sleep(0.1)
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+    GPIO.cleanup()
