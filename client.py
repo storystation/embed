@@ -10,7 +10,8 @@ import runpy
 from Scripts import colors
 from Scripts import distance
 
-server_adress = "ws://api.storystation.sitweb"
+server_adress = "ws://api.storystation.website/ws/game"
+
 
 def on_message(ws, message):
     message = json.loads(message)
@@ -31,23 +32,26 @@ def on_message(ws, message):
             data_result = {}
             if module['type'] == "distance":
                 #print("distance")
-                data_result["status"] = test.start(win)
+                data_result["status"] = distance.start(win)
             elif module['type'] == "colors":
                 #print("colors")
                 data_result["status"] = colors.start(win)
+                print(data_result)
+
             #elif module['type'] == "test":
                 #data_result["status"] = test.start()
                 #print(data_result)
             data_result['position'] = module['position']
             data_type = "end_module"
 
-            if time.time() < beginTime + module['time_max']:
-                result = {}
-                result['sender'] = "board"
-                result['message'] = data_result
-                result['type'] = data_type
-                result = json.dumps(result)
-                #print(result)
+            #if time.time() < beginTime + module['time_max']:
+            result = {}
+            result['sender'] = "board"
+            result['message'] = data_result
+            result['type'] = data_type
+            result = json.dumps(result)
+            ws.send(result)
+            print(result)
 
     #ws.send(result)
     #print(message)
