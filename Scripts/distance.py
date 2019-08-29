@@ -29,7 +29,7 @@ def start(win):
 
         distance = round((finImpulsion - debutImpulsion) * 340 * 100 / 2, 1)
 
-        minDist = 10.0
+        minDist = 5.0
         maxDist = minDist + 10.0
 
         if distance > minDist and distance < maxDist:
@@ -39,7 +39,7 @@ def start(win):
                 return "OK"
                 exit()
 
-        else: 
+        else:
             print("Tu es as ", distance, "cm")
             beginning = time.time()
 

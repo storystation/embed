@@ -13,21 +13,50 @@ answers = {
     "white": [1,1,1]
 }
 
-def startLed(win):
-    GPIO.setmode(GPIO.BOARD)
-    ledGreenPin = 35      #define 3 pins of RGBLED
-    ledRedPin = 33
-    ledBluePin = 37
-    GPIO.setup(ledRedPin,GPIO.OUT)      #set 3 pins of RGBLED to output mode
-    GPIO.setup(ledGreenPin,GPIO.OUT)
-    GPIO.setup(ledBluePin,GPIO.OUT)
-    p_Red = GPIO.PWM(ledRedPin,1000)    #configure PMW to 3 pins of RGBLED
-    p_Red.start(0)
-    p_Green = GPIO.PWM(ledGreenPin,1000)
-    p_Green.start(0)
-    p_Blue = GPIO.PWM(ledBluePin,1000)
-    p_Blue.start(0)
+GPIO.setmode(GPIO.BOARD)
+ledGreenPin = 35      #define 3 pins of RGBLED
+ledRedPin = 33
+ledBluePin = 37
+GPIO.setup(ledRedPin,GPIO.OUT)      #set 3 pins of RGBLED to output mode
+GPIO.setup(ledGreenPin,GPIO.OUT)
+GPIO.setup(ledBluePin,GPIO.OUT)
+p_Red = GPIO.PWM(ledRedPin,1000)    #configure PMW to 3 pins of RGBLED
+p_Red.start(0)
+p_Green = GPIO.PWM(ledGreenPin,1000)
+p_Green.start(0)
+p_Blue = GPIO.PWM(ledBluePin,1000)
+p_Blue.start(0)
 
+
+
+
+
+def turnOff():
+    GPIO.output(36,GPIO.LOW)
+    GPIO.output(38,GPIO.LOW)
+    GPIO.output(40,GPIO.LOW)
+
+def checkAnswer(arrayToCheck,win):
+    if answers[win] == arrayToCheck:
+        time.sleep(1)
+        turnOff()
+        print("OK")
+        #GPIO.cleanup()
+        return "OK"
+        exit()
+    else:
+        time.sleep(1)
+        turnOff()
+        print("KO")
+        #GPIO.cleanup()
+        return "KO"
+        exit()
+
+
+def start(win):
+    win = win[0]
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BOARD)
 
     right_anwser = win
     if right_anwser == "magenta":
@@ -55,29 +84,9 @@ def startLed(win):
         p_Green.ChangeDutyCycle(0)
         p_Blue.ChangeDutyCycle(100)
     elif right_anwser == "white":
-        p_Red.ChangeDutyCycle(100)  #blanc
-        p_Green.ChangeDutyCycle(100)
-        p_Blue.ChangeDutyCycle(100)
-
-
-def turnOff():
-    GPIO.output(36,GPIO.LOW)
-    GPIO.output(38,GPIO.LOW)
-    GPIO.output(40,GPIO.LOW)
-
-def checkAnswer(arrayToCheck, win):
-    time.sleep(1)
-    turnOff()
-    GPIO.cleanup()
-    if answers[win] == arrayToCheck:
-        return "OK"
-    else:
-        return "KO"
-
-def start(win):
-    startLed(win)
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BOARD)
+        p_Red.ChangeDutyCycle(0)  #blanc
+        p_Green.ChangeDutyCycle(0)
+        p_Blue.ChangeDutyCycle(0)
 
     # Define buttons
     GPIO.setup(11,GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Blue button
@@ -111,7 +120,7 @@ def start(win):
                 #print("flag = ", flag)
                 #print("")
                 if flag == 3:
-                    checkAnswer([state_blue, state_red, state_green], win)
+                    return checkAnswer([state_blue, state_red, state_green],win)
             else:
                 GPIO.output(36,GPIO.LOW)
                 GPIO.output(38,GPIO.LOW)
