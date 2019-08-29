@@ -17,37 +17,38 @@ def on_message(ws, message):
     message = json.loads(message)
     beginTime = time.time()
     #print(message['type'])
-    if message['type'] == "is_ready":
-        print("Board is ready")
-        #data_result = "OK"
-        #data_type = "is_ready"
-    elif message['type'] == "timeout":
-        print("Timeout")
-        #ws.close()
-        #data_type = "timeout"
-    elif message['type'] == "init_module":
-        module = message['message']
-        win = module['win_condition']
-        data_result = {}
-        if module['type'] == "distance":
-            #print("distance")
-            data_result["status"] = test.start(win)
-        elif module['type'] == "colors":
-            #print("colors")
-            data_result["status"] = colors.start(win)
-        #elif module['type'] == "test":
-            #data_result["status"] = test.start()
-            #print(data_result)
-        data_result['position'] = module['position']
-        data_type = "end_module"
+    if 'target' in message and message['target'] == "board":
+        if message['type'] == "is_ready":
+            print("Board is ready")
+            #data_result = "OK"
+            #data_type = "is_ready"
+        elif message['type'] == "timeout":
+            print("Timeout")
+            #ws.close()
+            #data_type = "timeout"
+        elif message['type'] == "init_module":
+            module = message['message']
+            win = module['win_condition']
+            data_result = {}
+            if module['type'] == "distance":
+                #print("distance")
+                data_result["status"] = test.start(win)
+            elif module['type'] == "colors":
+                #print("colors")
+                data_result["status"] = colors.start(win)
+            #elif module['type'] == "test":
+                #data_result["status"] = test.start()
+                #print(data_result)
+            data_result['position'] = module['position']
+            data_type = "end_module"
 
-        if time.time() < beginTime + module['time_max']:
-            result = {}
-            result['sender'] = "board"
-            result['message'] = data_result
-            result['type'] = data_type
-            result = json.dumps(result)
-            #print(result)
+            if time.time() < beginTime + module['time_max']:
+                result = {}
+                result['sender'] = "board"
+                result['message'] = data_result
+                result['type'] = data_type
+                result = json.dumps(result)
+                #print(result)
 
     #ws.send(result)
     #print(message)
