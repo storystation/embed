@@ -10,8 +10,7 @@ import runpy
 from Scripts import colors
 from Scripts import distance
 
-server_adress = "ws://192.168.33.109/ws/test"
-
+server_adress = "ws://api.storystation.sitweb"
 
 def on_message(ws, message):
     message = json.loads(message)
